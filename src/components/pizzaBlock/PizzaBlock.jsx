@@ -1,34 +1,39 @@
-import { useState } from "react";
+import { useState } from 'react'
 
-function PizzaBlock({ title, price }) {
-    const [pizzaCount, setPizzaCount] = useState(0);
+function PizzaBlock({ title, price, imageUrl, sizes, types }) {
+    
+    const [activeType, setActiveType] = useState(0);
+    const [activeSize, setActiveSize] = useState(0);
 
-    const onClickAddBtn = () => {
-        setPizzaCount(pizzaCount + 1)
-    }
+    const typePizza = ['thin', 'traditional'];
 
     return (
         <div className="pizza-block">
             <img
             className="pizza-block__image"
-            src="https://dodopizza-a.akamaihd.net/static/Img/Products/Pizza/ru-RU/b750f576-4a83-48e6-a283-5a8efb68c35d.jpg"
+            src={imageUrl}
             alt="Pizza"
             />
             <h4 className="pizza-block__title">{title}</h4>
             <div className="pizza-block__selector">
                 <ul>
-                    <li className="active">thin</li>
-                    <li>traditional</li>
+                   {
+                    types.map((typeId) =>(
+                        <li onClick={() => setActiveType(typeId)} className={activeType === typeId ? 'active' : ''}>{typePizza[typeId]}</li>
+                    ))
+                   }
                 </ul>
                 <ul>
-                    <li className="active">26 cm.</li>
-                    <li>30 cm.</li>
-                    <li>40 cm.</li>
+                    {
+                        sizes.map((size, i) => (
+                            <li onClick={() => setActiveSize(i)} className={activeSize === i ? 'active' : ''}>{size} cm.</li>
+                        ))
+                    }
                 </ul>
             </div>
             <div className="pizza-block__bottom">
                 <div className="pizza-block__price">from {price} $</div>
-                <button onClick={onClickAddBtn} className="button button--outline button--add">
+                <button className="button button--outline button--add">
                     <svg
                         width="12"
                         height="12"
@@ -42,7 +47,7 @@ function PizzaBlock({ title, price }) {
                     />
                     </svg>
                 <span>Add</span>
-                <i>{pizzaCount}</i>
+                <i>0</i>
                 </button>
             </div>
       </div> 
