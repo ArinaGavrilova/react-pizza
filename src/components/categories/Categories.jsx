@@ -1,3 +1,4 @@
+import './categories.scss';
 import { useState } from 'react'
 
 function Categories() {

@@ -1,3 +1,4 @@
+import './sort.scss'
 import { useState } from 'react'
 
 function Sort() {
@@ -26,7 +27,7 @@ function Sort() {
             fill="#2C2C2C"
           />
         </svg>
-        <strong>Sort by: </strong>
+        <strong>Sort by:&nbsp;</strong> 
         <span onClick={() => setOpen(!open)}>{list[selected]}</span>
       </div>
       {

@@ -1,3 +1,4 @@
+import './pizzaBlock.scss'
 import { useState } from 'react'
 
 function PizzaBlock({ title, price, imageUrl, sizes, types }) {
