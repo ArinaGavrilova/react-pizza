@@ -59,7 +59,7 @@ function PizzaBlock({ title, price, imageUrl, sizes, types }) {
                 <i>0</i>
                 </button>
             </div>
-      </div> 
+        </div> 
     )
 }
 

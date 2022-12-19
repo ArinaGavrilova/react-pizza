@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 
 import Header from '../header/Header';
 import Home  from '../../pages/Home';
-import Basket from '../../pages/Basket'
+import Cart from '../../pages/Cart'
 import NotFound from '../../pages/NotFound';
 
 import './app.scss'
@@ -13,13 +13,11 @@ function App() {
     <div className="wrapper">
       <Header />
       <div className="content">
-        <div className="container">
-          <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/cart' element={<Basket />}/>
-            <Route path='*' element={<NotFound />} />
-          </Routes>
-        </div>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/cart' element={<Cart />}/>
+          <Route path='*' element={<NotFound />} />
+        </Routes>
       </div>
     </div>
   );
