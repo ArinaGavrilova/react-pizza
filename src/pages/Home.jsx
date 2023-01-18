@@ -1,16 +1,16 @@
-import { useState, useEffect, useContext, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import qs from 'qs';
 
 import { setCategoryId, setCurrentPage, setFilters } from '../redux/slices/filterSlice';
+import { fetchPizzas } from '../redux/slices/pizzaSlice';
+
 import Categories from '../components/categories/Categories';
 import Sort, { list } from '../components/sort/Sort';
 import PizzaBlock from '../components/pizzaBlock/PizzaBlock';
 import Skeleton from '../components/skeleton/Skeleton';
 import Pagination from '../components/pagination/Pagination';
-import { SearchContext } from '../components/app/App';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -18,12 +18,11 @@ const Home = () => {
   const isSearch = useRef(false);
   const isMounted = useRef(false);
 
-  const { categoryId, sort, currentPage } = useSelector(state => state.filter);
-  const sortType = sort.sortProperty;
 
-  const { searchValue } = useContext(SearchContext)
-  const [items, setItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { items, status } = useSelector((state) => state.pizza);
+  const { categoryId, sort, currentPage, searchValue } = useSelector(state => state.filter);
+  
+  const sortType = sort.sortProperty;
 
   const onChangeCateg = (id) => {
     dispatch(setCategoryId(id))
@@ -33,19 +32,20 @@ const Home = () => {
     dispatch(setCurrentPage(num))
   }
 
-  const fetchPizzas = () => {
-    setIsLoading(true)
-
+  const getPizzas = async () => {
     const category = categoryId > 0 ? `category=${categoryId}` : ''
     const search = searchValue ? `&search=${searchValue}` : '';
 
-    axios.get(
-      `https://639b09b0d51415019748e526.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortType.sortProperty}&order=asc${search}`
-    )
-    .then(res => {
-      setItems(res.data);
-      setIsLoading(false)
-    })
+      dispatch(
+        fetchPizzas({
+          category, 
+          search,
+          currentPage, 
+          sortType
+        })
+      );
+    
+    window.scrollTo(0, 0);
   }
 
   useEffect(() => {
@@ -62,18 +62,11 @@ const Home = () => {
       )
       isSearch.current = true;
     }
-  }, [])
+  }, [categoryId, sortType, searchValue, currentPage])
 
   useEffect(() => {
-    window.scrollTo(0, 0)
-
-    if (!isSearch.current) {
-      fetchPizzas();
-    }
-
-    isSearch.current = false;
-
-  }, [categoryId, sortType, searchValue, currentPage])
+    getPizzas();
+  }, [])
 
   useEffect(() => {
     if (isMounted.current) {
@@ -87,7 +80,7 @@ const Home = () => {
     }
 
     isMounted.current = true;
-  }, [categoryId, sortType, searchValue, currentPage])
+  }, [])
 
   const pizzas = items.map((el) => <PizzaBlock key={el.id} {...el} />);
   
@@ -100,11 +93,23 @@ const Home = () => {
         <Sort />
       </div>
       <h2 className="content__title">All pizzas</h2>
-      <div className="content__items">
-        {
-          isLoading ? skeletons : pizzas
-        }
-      </div>   
+      {
+        status === 'error' ? (
+          <div className='content_error-info'>
+            <h2>Error! <icon>😕</icon></h2>
+            <p>
+              Failed to get pizzas. Try again later
+            </p> 
+          </div>
+          ) : (
+            <div className="content__items">
+              {
+                status === 'loading' ? skeletons : pizzas
+              }
+            
+            </div>)
+      }
+
       <Pagination currentPage={currentPage} onChangePage={onChangePage} />
     </div>
   )

@@ -7,7 +7,7 @@ function Categories({ value, onChangeCateg }) {
     <div className="categories">
       <ul>
         {
-          categories.map((categoryName, i) => (
+          categories?.map((categoryName, i) => (
             <li 
               key={i} 
               onClick={() => onChangeCateg(i)} 
